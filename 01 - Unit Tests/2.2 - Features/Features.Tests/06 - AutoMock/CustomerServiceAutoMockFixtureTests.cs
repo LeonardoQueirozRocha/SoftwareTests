@@ -19,8 +19,8 @@ public class CustomerServiceAutoMockFixtureTests
     {
         _customerTestsAutoMockerFixture = customerTestsAutoMockerFixture;
         _customerService = _customerTestsAutoMockerFixture.GetCustomerService();
-        _customerRepositoryMock = _customerTestsAutoMockerFixture.Mocker.GetMock<ICustomerRepository>();
-        _mediatorMock = _customerTestsAutoMockerFixture.Mocker.GetMock<IMediator>();
+        _customerRepositoryMock = _customerTestsAutoMockerFixture.GetCustomerRespositoryMock();
+        _mediatorMock = _customerTestsAutoMockerFixture.GetMediatorMock();
     }
 
     [Fact(DisplayName = "Add a customer with success")]
@@ -40,7 +40,7 @@ public class CustomerServiceAutoMockFixtureTests
             r => r.Add(customer),
             Times.Once);
 
-       _mediatorMock.Verify(
+        _mediatorMock.Verify(
             m => m.Publish(It.IsAny<INotification>(),
             CancellationToken.None),
             Times.Once);
@@ -70,7 +70,7 @@ public class CustomerServiceAutoMockFixtureTests
     }
 
     [Fact(DisplayName = "Get Active Customers")]
-    [Trait("Category", "Customer Service AutoMock Tests")]
+    [Trait("Category", "Customer Service AutoMockFixture Tests")]
     public void CustomerService_GetAllActive_ShouldReturnOnlyActiveCustomers()
     {
         // Arrange

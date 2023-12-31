@@ -1,7 +1,10 @@
 using Bogus;
 using Bogus.DataSets;
+using Features.Costumers.Interfaces;
 using Features.Costumers.Models;
 using Features.Costumers.Services;
+using MediatR;
+using Moq;
 using Moq.AutoMock;
 
 namespace Features.Tests.AutoMock;
@@ -9,9 +12,8 @@ namespace Features.Tests.AutoMock;
 public class CustomerTestsAutoMockerFixture : IDisposable
 {
     private const string BrazilianLocale = "pt_BR";
-
-    public CustomerService CustomerService;
-    public AutoMocker Mocker;
+    private CustomerService CustomerService;
+    private AutoMocker Mocker;
 
     public Customer BuildValidCustomer()
     {
@@ -68,6 +70,16 @@ public class CustomerTestsAutoMockerFixture : IDisposable
         Mocker = new AutoMocker();
         CustomerService = Mocker.CreateInstance<CustomerService>();
         return CustomerService;
+    }
+
+    public Mock<ICustomerRepository> GetCustomerRespositoryMock()
+    {
+        return Mocker.GetMock<ICustomerRepository>();
+    }
+    
+    public Mock<IMediator> GetMediatorMock()
+    {
+        return Mocker.GetMock<IMediator>();
     }
 
     public void Dispose() { }
