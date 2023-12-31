@@ -1,12 +1,17 @@
-﻿using Bogus;
+using Bogus;
 using Bogus.DataSets;
 using Features.Costumers.Models;
+using Features.Costumers.Services;
+using Moq.AutoMock;
 
-namespace Features.Tests.HumamData;
+namespace Features.Tests.AutoMock;
 
-public class CustomerTestsBogusFixture : IDisposable
+public class CustomerTestsAutoMockerFixture : IDisposable
 {
     private const string BrazilianLocale = "pt_BR";
+
+    public CustomerService CustomerService;
+    public AutoMocker Mocker;
 
     public Customer BuildValidCustomer()
     {
@@ -36,7 +41,7 @@ public class CustomerTestsBogusFixture : IDisposable
             active: active
         )).RuleFor(c => c.Email, (f, c) =>
             f.Internet.Email(
-                c.Name.ToLower(), 
+                c.Name.ToLower(),
                 c.LastName.ToLower()));
 
         return customers.Generate(quantity);
@@ -56,6 +61,13 @@ public class CustomerTestsBogusFixture : IDisposable
         ));
 
         return customer;
+    }
+
+    public CustomerService GetCustomerService()
+    {
+        Mocker = new AutoMocker();
+        CustomerService = Mocker.CreateInstance<CustomerService>();
+        return CustomerService;
     }
 
     public void Dispose() { }
