@@ -1,6 +1,8 @@
+using MediatR;
+
 namespace Features.Costumers.Notifications;
 
-public class CustomerEmailNotification
+public class CustomerEmailNotification : INotification
 {
     public string Origin { get; private set; }
     public string Destiny { get; private set; }
