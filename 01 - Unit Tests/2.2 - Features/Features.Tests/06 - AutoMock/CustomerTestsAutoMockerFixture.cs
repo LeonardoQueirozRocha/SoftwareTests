@@ -72,7 +72,7 @@ public class CustomerTestsAutoMockerFixture : IDisposable
         return CustomerService;
     }
 
-    public Mock<ICustomerRepository> GetCustomerRespositoryMock()
+    public Mock<ICustomerRepository> GetCustomerRepositoryMock()
     {
         return Mocker.GetMock<ICustomerRepository>();
     }
