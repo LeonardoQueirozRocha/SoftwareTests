@@ -19,7 +19,7 @@ public class CustomerServiceAutoMockFixtureTests
     {
         _customerTestsAutoMockerFixture = customerTestsAutoMockerFixture;
         _customerService = _customerTestsAutoMockerFixture.GetCustomerService();
-        _customerRepositoryMock = _customerTestsAutoMockerFixture.GetCustomerRespositoryMock();
+        _customerRepositoryMock = _customerTestsAutoMockerFixture.GetCustomerRepositoryMock();
         _mediatorMock = _customerTestsAutoMockerFixture.GetMediatorMock();
     }
 
