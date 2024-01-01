@@ -1,5 +1,6 @@
 using Features.Tests.AutoMock;
 using FluentAssertions;
+using Xunit.Abstractions;
 
 namespace Features.Tests.HumamData;
 
@@ -7,10 +8,14 @@ namespace Features.Tests.HumamData;
 public class CustomerFluentAssertionTests
 {
     private readonly CustomerTestsAutoMockerFixture _customerTestsAutoMockerFixture;
+    private readonly ITestOutputHelper _outputHelper;
 
-    public CustomerFluentAssertionTests(CustomerTestsAutoMockerFixture customerTestsAutoMockerFixture)
+    public CustomerFluentAssertionTests(
+        CustomerTestsAutoMockerFixture customerTestsAutoMockerFixture, 
+        ITestOutputHelper outputHelper)
     {
         _customerTestsAutoMockerFixture = customerTestsAutoMockerFixture;
+        _outputHelper = outputHelper;
     }
 
     [Fact(DisplayName = "New Valid Customer")]
@@ -41,5 +46,6 @@ public class CustomerFluentAssertionTests
         // Assert
         result.Should().BeFalse();
         customer.ValidationResult.Errors.Should().HaveCountGreaterThanOrEqualTo(1, "should contains validations errors");
+        _outputHelper.WriteLine($"It was found {customer.ValidationResult.Errors.Count} errors in this validation");
     }
 }
