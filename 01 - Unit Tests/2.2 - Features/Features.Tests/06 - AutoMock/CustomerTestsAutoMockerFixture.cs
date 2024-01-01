@@ -12,8 +12,8 @@ namespace Features.Tests.AutoMock;
 public class CustomerTestsAutoMockerFixture : IDisposable
 {
     private const string BrazilianLocale = "pt_BR";
-    private CustomerService CustomerService;
-    private AutoMocker Mocker;
+    private CustomerService _customerService;
+    private AutoMocker _mocker;
 
     public Customer BuildValidCustomer()
     {
@@ -67,19 +67,19 @@ public class CustomerTestsAutoMockerFixture : IDisposable
 
     public CustomerService GetCustomerService()
     {
-        Mocker = new AutoMocker();
-        CustomerService = Mocker.CreateInstance<CustomerService>();
-        return CustomerService;
+        _mocker = new AutoMocker();
+        _customerService = _mocker.CreateInstance<CustomerService>();
+        return _customerService;
     }
 
     public Mock<ICustomerRepository> GetCustomerRepositoryMock()
     {
-        return Mocker.GetMock<ICustomerRepository>();
+        return _mocker.GetMock<ICustomerRepository>();
     }
     
     public Mock<IMediator> GetMediatorMock()
     {
-        return Mocker.GetMock<IMediator>();
+        return _mocker.GetMock<IMediator>();
     }
 
     public void Dispose() { }
