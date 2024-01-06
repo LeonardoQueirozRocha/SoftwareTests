@@ -6,7 +6,7 @@ namespace NerdStore.Sales.Domain.Tests;
 public class OrderTests
 {
     [Fact(DisplayName = "Add Item New Order")]
-    [Trait("Category", "Order Tests")]
+    [Trait("Category", "Sales - Order")]
     public void AddOrderItem_NewOrder_ShouldUpdateValue()
     {
         // Arrange
@@ -21,7 +21,7 @@ public class OrderTests
     }
 
     [Fact(DisplayName = "Add Existing Order Item")]
-    [Trait("Category", "Order Tests")]
+    [Trait("Category", "Sales - Order")]
     public void AddOrderItem_ExistingItem_ShouldIncrementUnitsSumValues()
     {
         // Arrange
@@ -41,7 +41,7 @@ public class OrderTests
     }
 
     [Fact(DisplayName = "Add Order Item above permitted")]
-    [Trait("Category", "Order Tests")]
+    [Trait("Category", "Sales - Order")]
     public void AddOrderItem_ItemUnitsAbovePermitted_ShouldReturnException()
     {
         // Arrange
@@ -55,5 +55,20 @@ public class OrderTests
 
         // Act & Assert
         Assert.Throws<DomainException>(() => order.AddItem(orderItem));
+    }
+
+    [Fact(DisplayName = "Add existing Order Item above permitted")]
+    [Trait("Category", "Sales - Order")]
+    public void AddOrderItem_ExistingItemSumUnitsAbovePermitted_ShouldReturnException()
+    {
+        // Arrange
+        var order = Order.OrderFactory.NewOrderDraft(Guid.NewGuid());
+        var productId = Guid.NewGuid();
+        var orderItem = new OrderItem(productId, "Product Test", 1, 100);
+        var orderItem2 = new OrderItem(productId, "Product Test", Order.MAX_UNITS_ITEM, 100);
+        order.AddItem(orderItem);
+
+        // Act & Assert
+        Assert.Throws<DomainException>(() => order.AddItem(orderItem2));
     }
 }

@@ -23,12 +23,14 @@ public class Order
 
     public void AddItem(OrderItem orderItem)
     {
-        if (orderItem.Quantity > MAX_UNITS_ITEM) 
-            throw new DomainException($"Max of {MAX_UNITS_ITEM} units per products");
+        ValidateItemPermittedQuantity(orderItem);
 
-        if (_orderItems.Any(o => o.ProductId == orderItem.ProductId))
+        if (OrderItemExists(orderItem))
         {
-            var existingItem = _orderItems.FirstOrDefault(o => o.ProductId == orderItem.ProductId);
+            var existingItem = GetOrderItemByProductId(orderItem.ProductId);
+
+            ValidateItemPermittedQuantity(orderItem);
+
             existingItem?.AddUnits(orderItem.Quantity);
             orderItem = existingItem;
             _orderItems.Remove(existingItem);
@@ -38,7 +40,33 @@ public class Order
         CalculateOrderValue();
     }
 
-    private void CalculateOrderValue() => TotalValue = OrderItems.Sum(i => i.CalculateValue());
+    private void CalculateOrderValue()
+    {
+        TotalValue = OrderItems.Sum(i => i.CalculateValue());
+    }
+
+    private bool OrderItemExists(OrderItem orderItem)
+    {
+        return _orderItems.Any(o => o.ProductId == orderItem.ProductId);
+    }
+
+    private void ValidateItemPermittedQuantity(OrderItem orderItem)
+    {
+        var itemQuantity = orderItem.Quantity;
+        if (OrderItemExists(orderItem))
+        {
+            var existingItem = GetOrderItemByProductId(orderItem.ProductId);
+            itemQuantity += existingItem.Quantity;
+        }
+
+        if (itemQuantity > MAX_UNITS_ITEM)
+            throw new DomainException($"Max of {MAX_UNITS_ITEM} units per products");
+    }
+
+    private OrderItem GetOrderItemByProductId(Guid productId)
+    {
+        return _orderItems.FirstOrDefault(o => o.ProductId == productId);
+    }
 
     public static class OrderFactory
     {
