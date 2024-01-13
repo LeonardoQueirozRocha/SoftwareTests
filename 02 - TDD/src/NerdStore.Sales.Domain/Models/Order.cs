@@ -19,7 +19,10 @@ public class Order
         _orderItems = new List<OrderItem>();
     }
 
-    public void MakeDraft() => OrderStatus = OrderStatus.Draft;
+    public void MakeDraft()
+    {
+        OrderStatus = OrderStatus.Draft;
+    }
 
     public void AddItem(OrderItem orderItem)
     {
@@ -40,6 +43,24 @@ public class Order
         CalculateOrderValue();
     }
 
+    public void UpdateItem(OrderItem orderItem)
+    {
+        ValidateOrderItemNonexistent(orderItem);
+        ValidateItemPermittedQuantity(orderItem);
+
+        var existingItem = GetOrderItemByProductId(orderItem.ProductId);
+
+        _orderItems.Remove(existingItem);
+        _orderItems.Add(orderItem);
+
+        CalculateOrderValue();
+    }
+
+    public OrderItem GetOrderItemByProductId(Guid productId)
+    {
+        return _orderItems.FirstOrDefault(o => o.ProductId == productId);
+    }
+
     private void CalculateOrderValue()
     {
         TotalValue = OrderItems.Sum(i => i.CalculateValue());
@@ -48,6 +69,12 @@ public class Order
     private bool OrderItemExists(OrderItem orderItem)
     {
         return _orderItems.Any(o => o.ProductId == orderItem.ProductId);
+    }
+
+    private void ValidateOrderItemNonexistent(OrderItem orderItem)
+    {
+        if (!OrderItemExists(orderItem))
+            throw new DomainException("Item don't exists in the order");
     }
 
     private void ValidateItemPermittedQuantity(OrderItem orderItem)
@@ -61,11 +88,6 @@ public class Order
 
         if (itemQuantity > MAX_UNITS_ITEM)
             throw new DomainException($"Max of {MAX_UNITS_ITEM} units per products");
-    }
-
-    private OrderItem GetOrderItemByProductId(Guid productId)
-    {
-        return _orderItems.FirstOrDefault(o => o.ProductId == productId);
     }
 
     public static class OrderFactory
