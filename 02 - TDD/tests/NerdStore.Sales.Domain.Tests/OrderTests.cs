@@ -142,4 +142,37 @@ public class OrderTests
         // Act & Assert
         Assert.Throws<DomainException>(() => order.UpdateItem(updatedOrderItem));
     }
+
+    [Fact(DisplayName = "Remove an existing order item")]
+    [Trait("Category", "Sales - Order")]
+    public void RemoveOrderItem_ItemNotExistedInTheList_ShouldReturnException()
+    {
+        // Arrange
+        var order = Order.OrderFactory.NewOrderDraft(Guid.NewGuid());
+        var removeOrderItem = new OrderItem(Guid.NewGuid(), "Test Product", 5, 100);
+
+        // Act & Assert
+        Assert.Throws<DomainException>(() => order.RemoveItem(removeOrderItem));
+    }
+
+    [Fact(DisplayName = "Remove order item should calculate total value")]
+    [Trait("Category", "Sales - Order")]
+    public void RemoveOrderItem_ExistedOrderItem_ShouldUpdateTotalValue()
+    {
+        // Arrange
+        var order = Order.OrderFactory.NewOrderDraft(Guid.NewGuid());
+        var productId = Guid.NewGuid();
+        var orderItem1 = new OrderItem(Guid.NewGuid(), "Xpto Product", 2, 100);
+        var orderItem2 = new OrderItem(productId, "Test Product", 3, 15);
+        order.AddItem(orderItem1);
+        order.AddItem(orderItem2);
+
+        var orderTotalValue = orderItem2.Quantity * orderItem2.UnitValue;
+
+        // Act
+        order.RemoveItem(orderItem1);
+
+        // Assert
+        Assert.Equal(orderTotalValue, order.TotalValue);
+    }
 }

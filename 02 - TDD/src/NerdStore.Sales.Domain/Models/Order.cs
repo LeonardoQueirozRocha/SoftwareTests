@@ -45,7 +45,7 @@ public class Order
 
     public void UpdateItem(OrderItem orderItem)
     {
-        ValidateOrderItemNonexistent(orderItem);
+        ValidateNonexistentOrderItem(orderItem);
         ValidateItemPermittedQuantity(orderItem);
 
         var existingItem = GetOrderItemByProductId(orderItem.ProductId);
@@ -53,6 +53,13 @@ public class Order
         _orderItems.Remove(existingItem);
         _orderItems.Add(orderItem);
 
+        CalculateOrderValue();
+    }
+
+    public void RemoveItem(OrderItem orderItem)
+    {
+        ValidateNonexistentOrderItem(orderItem);
+        _orderItems.Remove(orderItem);
         CalculateOrderValue();
     }
 
@@ -71,7 +78,7 @@ public class Order
         return _orderItems.Any(o => o.ProductId == orderItem.ProductId);
     }
 
-    private void ValidateOrderItemNonexistent(OrderItem orderItem)
+    private void ValidateNonexistentOrderItem(OrderItem orderItem)
     {
         if (!OrderItemExists(orderItem))
             throw new DomainException("Item don't exists in the order");
