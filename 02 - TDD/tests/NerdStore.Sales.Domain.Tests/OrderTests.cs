@@ -1,5 +1,7 @@
 using NerdStore.Core.DomainObjects;
+using NerdStore.Sales.Domain.Enums;
 using NerdStore.Sales.Domain.Models;
+using Xunit.Sdk;
 
 namespace NerdStore.Sales.Domain.Tests;
 
@@ -174,5 +176,114 @@ public class OrderTests
 
         // Assert
         Assert.Equal(orderTotalValue, order.TotalValue);
+    }
+
+    [Fact(DisplayName = "Apply valid voucher")]
+    [Trait("Category", "Sales - Order")]
+    public void Order_ApplyValidVoucher_ShouldReturnWithoutErrors()
+    {
+        // Arrange
+        var order = Order.OrderFactory.NewOrderDraft(Guid.NewGuid());
+        var voucher = new Voucher(
+            code: "PROMO-15-REAIS",
+            voucherDiscountType: VoucherDiscountType.Value,
+            discountValue: 15,
+            discountPercentage: null,
+            quantity: 1,
+            expirationDate: DateTime.Now.AddDays(15),
+            active: true,
+            isUsed: false);
+
+        // Act
+        var result = order.ApplyVoucher(voucher);
+
+        // Assert
+        Assert.True(result.IsValid);
+    }
+
+    [Fact(DisplayName = "Apply invalid voucher")]
+    [Trait("Category", "Sales - Order")]
+    public void Order_ApplyInvalidVoucher_ShouldReturnWithErrors()
+    {
+        // Arrange
+        var order = Order.OrderFactory.NewOrderDraft(Guid.NewGuid());
+        var voucher = new Voucher(
+            code: "PROMO-15-REAIS",
+            voucherDiscountType: VoucherDiscountType.Value,
+            discountValue: 15,
+            discountPercentage: null,
+            quantity: 1,
+            expirationDate: DateTime.Now.AddDays(-1),
+            active: true,
+            isUsed: true);
+
+        // Act
+        var result = order.ApplyVoucher(voucher);
+
+        // Assert
+        Assert.False(result.IsValid);
+    }
+
+    [Fact(DisplayName = "Apply voucher discount value")]
+    [Trait("Category", "Sales - Order")]
+    public void ApplyVoucher_VoucherDiscountValueType_ShouldDiscountTotalValue()
+    {
+        // Arrange
+        var order = Order.OrderFactory.NewOrderDraft(Guid.NewGuid());
+        var orderItem1 = new OrderItem(Guid.NewGuid(), "Xpto Product", 2, 100);
+        var orderItem2 = new OrderItem(Guid.NewGuid(), "Test Product", 3, 15);
+
+        order.AddItem(orderItem1);
+        order.AddItem(orderItem2);
+
+        var voucher = new Voucher(
+            code: "PROMO-15-REAIS",
+            voucherDiscountType: VoucherDiscountType.Value,
+            discountValue: 15,
+            discountPercentage: null,
+            quantity: 1,
+            expirationDate: DateTime.Now.AddDays(10),
+            active: true,
+            isUsed: false);
+
+        var expectedDiscountValue = order.TotalValue - voucher.DiscountValue;
+
+        // Act
+        order.ApplyVoucher(voucher);
+
+        // Assert
+        Assert.Equal(expectedDiscountValue, order.TotalValue);
+    }
+
+    [Fact(DisplayName = "Apply voucher discount percentage")]
+    [Trait("Category", "Sales - Order")]
+    public void ApplyVoucher_VoucherDiscountPercentageType_ShouldDiscountTotalValue()
+    {
+        // Arrange
+        var order = Order.OrderFactory.NewOrderDraft(Guid.NewGuid());
+        var orderItem1 = new OrderItem(Guid.NewGuid(), "Xpto Product", 2, 100);
+        var orderItem2 = new OrderItem(Guid.NewGuid(), "Test Product", 3, 15);
+
+        order.AddItem(orderItem1);
+        order.AddItem(orderItem2);
+
+        var voucher = new Voucher(
+            code: "PROMO-15-REAIS",
+            voucherDiscountType: VoucherDiscountType.Percentage,
+            discountValue: null,
+            discountPercentage: 15,
+            quantity: 1,
+            expirationDate: DateTime.Now.AddDays(10),
+            active: true,
+            isUsed: false);
+
+        var discountValue = order.TotalValue * voucher.DiscountPercentage / 100;
+        var expectedDiscountValue = order.TotalValue - discountValue;
+
+        // Act
+        order.ApplyVoucher(voucher);
+
+        // Assert
+        Assert.Equal(expectedDiscountValue, order.TotalValue);
     }
 }

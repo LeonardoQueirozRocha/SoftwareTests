@@ -1,3 +1,4 @@
+using FluentValidation.Results;
 using NerdStore.Core.DomainObjects;
 using NerdStore.Sales.Domain.Enums;
 
@@ -11,7 +12,10 @@ public class Order
 
     public Guid CustomerId { get; private set; }
     public decimal TotalValue { get; private set; }
+    public decimal Discount { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
+    public bool IsVoucherUsed { get; private set; }
+    public Voucher Voucher { get; private set; }
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
 
     protected Order()
@@ -76,6 +80,39 @@ public class Order
     private bool OrderItemExists(OrderItem orderItem)
     {
         return _orderItems.Any(o => o.ProductId == orderItem.ProductId);
+    }
+
+    public ValidationResult ApplyVoucher(Voucher voucher)
+    {
+        var result = voucher.ApplyIfApplicable();
+
+        if (!result.IsValid) return result;
+
+        Voucher = voucher;
+        IsVoucherUsed = true;
+
+        CalculateDiscountTotalValue();
+
+        return result;
+    }
+
+    public void CalculateDiscountTotalValue()
+    {
+        if (!IsVoucherUsed) return;
+
+        decimal discount = 0;
+
+        if (Voucher.VoucherDiscountType is VoucherDiscountType.Value)
+        {
+            discount = Voucher.DiscountValue ?? 0;
+        }
+        else
+        {
+            discount = TotalValue * (Voucher.DiscountPercentage ?? 0) / 100;
+        }
+
+        TotalValue -= discount;
+        Discount = discount;
     }
 
     private void ValidateNonexistentOrderItem(OrderItem orderItem)
