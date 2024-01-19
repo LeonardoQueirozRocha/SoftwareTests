@@ -72,16 +72,6 @@ public class Order
         return _orderItems.FirstOrDefault(o => o.ProductId == productId);
     }
 
-    private void CalculateOrderValue()
-    {
-        TotalValue = OrderItems.Sum(i => i.CalculateValue());
-    }
-
-    private bool OrderItemExists(OrderItem orderItem)
-    {
-        return _orderItems.Any(o => o.ProductId == orderItem.ProductId);
-    }
-
     public ValidationResult ApplyVoucher(Voucher voucher)
     {
         var result = voucher.ApplyIfApplicable();
@@ -101,17 +91,20 @@ public class Order
         if (!IsVoucherUsed) return;
 
         decimal discount = 0;
+        var value = TotalValue;
 
         if (Voucher.VoucherDiscountType is VoucherDiscountType.Value)
         {
             discount = Voucher.DiscountValue ?? 0;
+            value -= discount;
         }
         else
         {
             discount = TotalValue * (Voucher.DiscountPercentage ?? 0) / 100;
+            value -= discount;
         }
 
-        TotalValue -= discount;
+        TotalValue = value < 0 ? 0 : value;
         Discount = discount;
     }
 
@@ -132,6 +125,17 @@ public class Order
 
         if (itemQuantity > MAX_UNITS_ITEM)
             throw new DomainException($"Max of {MAX_UNITS_ITEM} units per products");
+    }
+
+    private void CalculateOrderValue()
+    {
+        TotalValue = OrderItems.Sum(i => i.CalculateValue());
+        CalculateDiscountTotalValue();
+    }
+
+    private bool OrderItemExists(OrderItem orderItem)
+    {
+        return _orderItems.Any(o => o.ProductId == orderItem.ProductId);
     }
 
     public static class OrderFactory

@@ -1,7 +1,6 @@
 using NerdStore.Core.DomainObjects;
 using NerdStore.Sales.Domain.Enums;
 using NerdStore.Sales.Domain.Models;
-using Xunit.Sdk;
 
 namespace NerdStore.Sales.Domain.Tests;
 
@@ -285,5 +284,62 @@ public class OrderTests
 
         // Assert
         Assert.Equal(expectedDiscountValue, order.TotalValue);
+    }
+
+    [Fact(DisplayName = "Apply discount voucher exceeds total value")]
+    [Trait("Category", "Sales - Order")]
+    public void ApplyVoucher_DiscountExceedsOrderTotalValue_OrderMustHaveZeroValue()
+    {
+        // Arrange
+        var order = Order.OrderFactory.NewOrderDraft(Guid.NewGuid());
+        var orderItem1 = new OrderItem(Guid.NewGuid(), "Xpto Product", 2, 100);
+        order.AddItem(orderItem1);
+
+        var voucher = new Voucher(
+            code: "PROMO-15-REAIS",
+            voucherDiscountType: VoucherDiscountType.Value,
+            discountValue: 300,
+            discountPercentage: null,
+            quantity: 1,
+            expirationDate: DateTime.Now.AddDays(10),
+            active: true,
+            isUsed: false);
+
+        // Act
+        order.ApplyVoucher(voucher);
+
+        // Assert
+        Assert.Equal(0, order.TotalValue);
+    }
+
+    [Fact(DisplayName = "Apply voucher recalculate discount at order modify")]
+    [Trait("Category", "Sales - Order")]
+    public void ApplyVoucher_ModifyOrderItems_ShouldCalculateDiscountTotalValue()
+    {
+        // Arrange
+        var order = Order.OrderFactory.NewOrderDraft(Guid.NewGuid());
+        var orderItem1 = new OrderItem(Guid.NewGuid(), "Xpto Product", 2, 100);
+        order.AddItem(orderItem1);
+
+        var voucher = new Voucher(
+            code: "PROMO-15-REAIS",
+            voucherDiscountType: VoucherDiscountType.Value,
+            discountValue: 50,
+            discountPercentage: null,
+            quantity: 1,
+            expirationDate: DateTime.Now.AddDays(10),
+            active: true,
+            isUsed: false);
+
+        order.ApplyVoucher(voucher);
+
+        var orderItem2 = new OrderItem(Guid.NewGuid(), "Product Test", 4, 25);
+
+        // Act
+        order.AddItem(orderItem2);
+
+        // Assert
+        var expectedTotalValue = order.OrderItems.Sum(i => i.Quantity * i.UnitValue) - voucher.DiscountValue;
+        Assert.Equal(expectedTotalValue, order.TotalValue);
     }
 }
