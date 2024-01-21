@@ -133,7 +133,7 @@ public class Order : Entity, IAggregateRoot
         CalculateDiscountTotalValue();
     }
 
-    private bool OrderItemExists(OrderItem orderItem)
+    public bool OrderItemExists(OrderItem orderItem)
     {
         return _orderItems.Any(o => o.ProductId == orderItem.ProductId);
     }
