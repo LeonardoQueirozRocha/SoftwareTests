@@ -31,7 +31,7 @@ public class OrderCommandHandler : IRequestHandler<AddOrderItemCommand, bool>
 
         _orderRepository.Add(order);
 
-        var orderEvent = new AddedOrderItemEvent(
+        var eventItem = new AddedOrderItemEvent(
             order.CustomerId,
             order.Id,
             message.ProductId,
@@ -39,8 +39,8 @@ public class OrderCommandHandler : IRequestHandler<AddOrderItemCommand, bool>
             message.UnitValue,
             message.Quantity);
 
-        await _mediator.Publish(orderEvent, cancellationToken);
+        order.AddEvent(eventItem);
 
-        return true;
+        return await _orderRepository.UnitOfWork.Commit();
     }
 }
