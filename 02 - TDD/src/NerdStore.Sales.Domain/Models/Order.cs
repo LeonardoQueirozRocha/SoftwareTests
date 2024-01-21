@@ -4,7 +4,7 @@ using NerdStore.Sales.Domain.Enums;
 
 namespace NerdStore.Sales.Domain.Models;
 
-public class Order : Entity
+public class Order : Entity, IAggregateRoot
 {
     public static int MAX_UNITS_ITEM => 15;
     public static int MIN_UNITS_ITEM => 1;
