@@ -9,31 +9,48 @@ namespace NerdStore.Sales.Application.Tests.Orders;
 
 public class OrderCommandHandlerTests
 {
+    private readonly Guid _customerId;
+    private readonly Guid _productId;
+    private readonly Order _order;
+    private readonly CancellationToken _cancellationToken;
+    private readonly Mock<IOrderRepository> _orderRepository;
+    private readonly Mock<IMediator> _mediator;
+    private readonly OrderCommandHandler _handler;
+
+    public OrderCommandHandlerTests()
+    {
+        var mocker = new AutoMocker();
+        _handler = mocker.CreateInstance<OrderCommandHandler>();
+        _orderRepository = mocker.GetMock<IOrderRepository>();
+        _mediator = mocker.GetMock<IMediator>();
+        _customerId = Guid.NewGuid();
+        _productId = Guid.NewGuid();
+        _order = Order.OrderFactory.NewOrderDraft(_customerId);
+        _cancellationToken = CancellationToken.None;
+    }
+
     [Fact(DisplayName = "Add item to a order with success")]
     [Trait("Category", "Sales - Order Command Handler")]
     public async Task AddItem_NewOrder_ShouldExecuteWithSuccess()
     {
         // Arrange
-        var orderCommand = new AddOrderItemCommand(Guid.NewGuid(), Guid.NewGuid(), "Test Product", 2, 100);
-        var mocker = new AutoMocker();
-        var orderHandler = mocker.CreateInstance<OrderCommandHandler>();
+        var orderCommand = new AddOrderItemCommand(_customerId, _productId, "Test Product", 2, 100);
 
-        mocker
-            .GetMock<IOrderRepository>()
+        _orderRepository
             .Setup(r => r.UnitOfWork.Commit())
             .Returns(Task.FromResult(true));
 
         // Act
-        var result = await orderHandler.Handle(orderCommand, CancellationToken.None);
+        var result = await _handler.Handle(orderCommand, _cancellationToken);
 
         // Assert
         Assert.True(result);
 
-        mocker.GetMock<IOrderRepository>().Verify(
+        _orderRepository.Verify(
             r => r.Add(It.IsAny<Order>()),
             Times.Once);
 
-        mocker.GetMock<IOrderRepository>().Verify(
+        _orderRepository.Verify(
             r => r.UnitOfWork.Commit(),
             Times.Once);
     }
@@ -43,41 +60,34 @@ public class OrderCommandHandlerTests
     public async Task AddItem_NewItemToADraftOrder_ShouldExecuteSuccessfully()
     {
         // Arrange
-        var customerId = Guid.NewGuid();
-        var order = Order.OrderFactory.NewOrderDraft(customerId);
         var existingOrderItem = new OrderItem(Guid.NewGuid(), "Test Product", 2, 100);
-        order.AddItem(existingOrderItem);
+        _order.AddItem(existingOrderItem);
 
-        var orderCommand = new AddOrderItemCommand(customerId, Guid.NewGuid(), "Test Product", 2, 100);
+        var orderCommand = new AddOrderItemCommand(_customerId, Guid.NewGuid(), "Test Product", 2, 100);
 
-        var mocker = new AutoMocker();
-        var orderHandler = mocker.CreateInstance<OrderCommandHandler>();
+        _orderRepository
+            .Setup(r => r.GetOrderDraftByCustomerIdAsync(_customerId))
+            .Returns(Task.FromResult(_order));
 
-        mocker
-            .GetMock<IOrderRepository>()
-            .Setup(r => r.GetOrderDraftByCustomerIdAsync(customerId))
-            .Returns(Task.FromResult(order));
-
-        mocker
-            .GetMock<IOrderRepository>()
+        _orderRepository
             .Setup(r => r.UnitOfWork.Commit())
             .Returns(Task.FromResult(true));
 
         // Act
-        var result = await orderHandler.Handle(orderCommand, CancellationToken.None);
+        var result = await _handler.Handle(orderCommand, _cancellationToken);
 
         // Assert
         Assert.True(result);
 
-        mocker.GetMock<IOrderRepository>().Verify(
+        _orderRepository.Verify(
             r => r.AddItem(It.IsAny<OrderItem>()),
             Times.Once);
 
-        mocker.GetMock<IOrderRepository>().Verify(
+        _orderRepository.Verify(
             r => r.Update(It.IsAny<Order>()),
             Times.Once);
 
-        mocker.GetMock<IOrderRepository>().Verify(
+        _orderRepository.Verify(
             r => r.UnitOfWork.Commit(),
             Times.Once);
     }
@@ -87,43 +97,34 @@ public class OrderCommandHandlerTests
     public async Task AddItem_ExistingItemToAOrderDraft_ShouldExecuteSuccessfully()
     {
         // Arrange
-        var customerId = Guid.NewGuid();
-        var productId = Guid.NewGuid();
+        var existingOrderItem = new OrderItem(_productId, "Xpto Product", 2, 100);
+        _order.AddItem(existingOrderItem);
 
-        var order = Order.OrderFactory.NewOrderDraft(customerId);
-        var existingOrderItem = new OrderItem(productId, "Xpto Product", 2, 100);
-        order.AddItem(existingOrderItem);
+        var orderCommand = new AddOrderItemCommand(_customerId, _productId, "Xpto Product", 2, 100);
 
-        var orderCommand = new AddOrderItemCommand(customerId, productId, "Xpto Product", 2, 100);
+        _orderRepository
+            .Setup(r => r.GetOrderDraftByCustomerIdAsync(_customerId))
+            .Returns(Task.FromResult(_order));
 
-        var mocker = new AutoMocker();
-        var orderHandler = mocker.CreateInstance<OrderCommandHandler>();
-
-        mocker
-            .GetMock<IOrderRepository>()
-            .Setup(r => r.GetOrderDraftByCustomerIdAsync(customerId))
-            .Returns(Task.FromResult(order));
-
-        mocker
-            .GetMock<IOrderRepository>()
+        _orderRepository
             .Setup(r => r.UnitOfWork.Commit())
             .Returns(Task.FromResult(true));
 
         // Act
-        var result = await orderHandler.Handle(orderCommand, CancellationToken.None);
+        var result = await _handler.Handle(orderCommand, _cancellationToken);
 
         // Assert
         Assert.True(result);
 
-        mocker.GetMock<IOrderRepository>().Verify(
+        _orderRepository.Verify(
             r => r.UpdateItem(It.IsAny<OrderItem>()),
             Times.Once);
 
-        mocker.GetMock<IOrderRepository>().Verify(
+        _orderRepository.Verify(
             r => r.Update(It.IsAny<Order>()),
             Times.Once);
 
-        mocker.GetMock<IOrderRepository>().Verify(
+        _orderRepository.Verify(
             r => r.UnitOfWork.Commit(),
             Times.Once);
     }
@@ -135,16 +136,14 @@ public class OrderCommandHandlerTests
         // Arrange
         var orderCommand = new AddOrderItemCommand(Guid.Empty, Guid.Empty, string.Empty, 0, 0);
 
-        var mocker = new AutoMocker();
-        var orderHandler = mocker.CreateInstance<OrderCommandHandler>();
-
         // Act
-        var result = await orderHandler.Handle(orderCommand, CancellationToken.None);
+        var result = await _handler.Handle(orderCommand, _cancellationToken);
 
         // Assert
         Assert.False(result);
-        mocker.GetMock<IMediator>().Verify(
-            m => m.Publish(It.IsAny<INotification>(), CancellationToken.None), 
+
+        _mediator.Verify(
+            m => m.Publish(It.IsAny<INotification>(), It.IsAny<CancellationToken>()),
             Times.Exactly(5));
     }
 }
