@@ -1,6 +1,10 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using NerdStore.Catalog.Data;
+using NerdStore.Catalog.Data.Repositories;
+using NerdStore.Catalog.Domain.Interfaces.Repositories;
+using NerdStore.Catalog.Domain.Interfaces.Services;
+using NerdStore.Catalog.Domain.Services;
 using NerdStore.Sales.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,11 +16,17 @@ builder.Services.AddDbContext<CatalogContext>(options =>
 builder.Services.AddDbContext<SalesContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<CatalogContext>();
-builder.Services.AddScoped<SalesContext>();
 
 builder.Services.AddMediatR(config =>
     config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+// Catalog
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddScoped<CatalogContext>();
+
+// Sales
+builder.Services.AddScoped<SalesContext>();
 
 builder.Services.AddControllersWithViews();
 
