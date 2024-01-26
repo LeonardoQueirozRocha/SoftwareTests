@@ -1,6 +1,23 @@
+using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using NerdStore.Catalog.Data;
+using NerdStore.Sales.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<CatalogContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContext<SalesContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<CatalogContext>();
+builder.Services.AddScoped<SalesContext>();
+
+builder.Services.AddMediatR(config =>
+    config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
