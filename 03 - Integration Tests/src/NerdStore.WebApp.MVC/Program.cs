@@ -1,5 +1,8 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using NerdStore.Catalog.Application.AutoMapper;
+using NerdStore.Catalog.Application.Interfaces.Services;
+using NerdStore.Catalog.Application.Services;
 using NerdStore.Catalog.Data;
 using NerdStore.Catalog.Data.Repositories;
 using NerdStore.Catalog.Domain.Interfaces.Repositories;
@@ -16,12 +19,17 @@ builder.Services.AddDbContext<CatalogContext>(options =>
 builder.Services.AddDbContext<SalesContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddAutoMapper(
+    typeof(DomainToViewModelMappingProfile),
+    typeof(ViewModelToDomainMappingProfile)
+);
 
 builder.Services.AddMediatR(config =>
     config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 // Catalog
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductAppService, ProductAppService>();
 builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<CatalogContext>();
 
