@@ -1,4 +1,5 @@
 using System.Reflection;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NerdStore.Catalog.Application.AutoMapper;
 using NerdStore.Catalog.Application.Interfaces.Services;
@@ -8,6 +9,7 @@ using NerdStore.Catalog.Data.Repositories;
 using NerdStore.Catalog.Domain.Interfaces.Repositories;
 using NerdStore.Catalog.Domain.Interfaces.Services;
 using NerdStore.Catalog.Domain.Services;
+using NerdStore.Core.Messages.CommandMessages.Notifications;
 using NerdStore.Sales.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +28,9 @@ builder.Services.AddAutoMapper(
 
 builder.Services.AddMediatR(config =>
     config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+//Notifications
+builder.Services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
 
 // Catalog
 builder.Services.AddScoped<IProductRepository, ProductRepository>();

@@ -1,7 +1,7 @@
 using MediatR;
 using NerdStore.Catalog.Domain.Interfaces.Repositories;
 using NerdStore.Catalog.Domain.Interfaces.Services;
-using NerdStore.Core.DomainObjects;
+using NerdStore.Core.Messages.CommandMessages.Notifications;
 
 namespace NerdStore.Catalog.Domain.Services;
 

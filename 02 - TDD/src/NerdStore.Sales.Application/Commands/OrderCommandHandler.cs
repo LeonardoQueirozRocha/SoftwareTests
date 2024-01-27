@@ -1,5 +1,5 @@
 using MediatR;
-using NerdStore.Core.DomainObjects;
+using NerdStore.Core.Messages.CommandMessages.Notifications;
 using NerdStore.Sales.Application.Events;
 using NerdStore.Sales.Domain.Interfaces.Repositories;
 using NerdStore.Sales.Domain.Models;
