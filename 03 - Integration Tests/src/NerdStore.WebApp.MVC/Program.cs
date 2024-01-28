@@ -11,6 +11,8 @@ using NerdStore.Catalog.Domain.Interfaces.Services;
 using NerdStore.Catalog.Domain.Services;
 using NerdStore.Core.Messages.CommandMessages.Notifications;
 using NerdStore.Sales.Data;
+using NerdStore.Sales.Data.Repositories;
+using NerdStore.Sales.Domain.Interfaces.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,7 @@ builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<CatalogContext>();
 
 // Sales
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<SalesContext>();
 
 builder.Services.AddControllersWithViews();
