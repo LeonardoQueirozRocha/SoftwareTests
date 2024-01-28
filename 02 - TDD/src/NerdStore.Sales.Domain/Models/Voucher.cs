@@ -1,10 +1,11 @@
 using FluentValidation.Results;
+using NerdStore.Core.DomainObjects;
 using NerdStore.Sales.Domain.Enums;
 using NerdStore.Sales.Domain.Validators;
 
 namespace NerdStore.Sales.Domain.Models;
 
-public class Voucher
+public class Voucher : Entity
 {
     public string Code { get; private set; }
     public VoucherDiscountType VoucherDiscountType { get; private set; }
@@ -14,6 +15,9 @@ public class Voucher
     public DateTime ExpirationDate { get; private set; }
     public bool Active { get; private set; }
     public bool IsUsed { get; private set; }
+
+    // EF Rel.
+    public ICollection<Order> Orders { get; set; }
 
     public Voucher(
         string code,

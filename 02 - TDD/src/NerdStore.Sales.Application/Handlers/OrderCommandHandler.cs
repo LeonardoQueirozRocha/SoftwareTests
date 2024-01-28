@@ -1,12 +1,18 @@
 using MediatR;
+using NerdStore.Core.Messages;
 using NerdStore.Core.Messages.CommandMessages.Notifications;
+using NerdStore.Sales.Application.Commands;
 using NerdStore.Sales.Application.Events;
 using NerdStore.Sales.Domain.Interfaces.Repositories;
 using NerdStore.Sales.Domain.Models;
 
-namespace NerdStore.Sales.Application.Commands;
+namespace NerdStore.Sales.Application.Handlers;
 
-public class OrderCommandHandler : IRequestHandler<AddOrderItemCommand, bool>
+public class OrderCommandHandler :
+    IRequestHandler<AddOrderItemCommand, bool>,
+    IRequestHandler<UpdateOrderItemCommand, bool>,
+    IRequestHandler<RemoveOrderItemCommand, bool>,
+    IRequestHandler<ApplyOrderVoucherCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IMediator _mediator;
@@ -50,6 +56,31 @@ public class OrderCommandHandler : IRequestHandler<AddOrderItemCommand, bool>
         return await _orderRepository.UnitOfWork.Commit();
     }
 
+    public async Task<bool> Handle(UpdateOrderItemCommand request, CancellationToken cancellationToken)
+    {
+        // if (!ValidateCommand(request, cancellationToken)) return false;
+
+        // var order = await _orderRepository.GetOrderDraftByCustomerIdAsync(request.CustomerId);
+
+        // if (order is null)
+        // {
+        //     await _mediator.Publish(new DomainNotification("order", "Order not found!"), cancellationToken);
+        //     return false;
+        // }
+        throw new NotImplementedException();
+
+    }
+
+    public Task<bool> Handle(RemoveOrderItemCommand request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> Handle(ApplyOrderVoucherCommand request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
     private Order AddNewOrderDraft(Guid customerId, OrderItem orderItem)
     {
         var order = Order.OrderFactory.NewOrderDraft(customerId);
@@ -76,7 +107,7 @@ public class OrderCommandHandler : IRequestHandler<AddOrderItemCommand, bool>
         _orderRepository.Update(order);
     }
 
-    private bool ValidateCommand(AddOrderItemCommand message, CancellationToken cancellationToken)
+    private bool ValidateCommand(Command message, CancellationToken cancellationToken)
     {
         if (message.IsValid()) return true;
 

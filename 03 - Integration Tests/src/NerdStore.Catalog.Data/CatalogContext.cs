@@ -14,21 +14,19 @@ public class CatalogContext : DbContext, IUnitOfWork
     public async Task<bool> Commit()
     {
         const string RegistrationDateProperty = "RegistrationDate";
-        
+
         ChangeTracker
             .Entries()
-            .Where(entry => entry.Entity
-                .GetType()
-                .GetProperty(RegistrationDateProperty) != null)
-                .ToList()
-                .ForEach(entry =>
-                {
-                    if (entry.State is EntityState.Added)
-                        entry.Property(RegistrationDateProperty).CurrentValue = DateTime.Now;
+            .Where(entry => entry.Entity.GetType().GetProperty(RegistrationDateProperty) != null)
+            .ToList()
+            .ForEach(entry =>
+            {
+                if (entry.State is EntityState.Added)
+                    entry.Property(RegistrationDateProperty).CurrentValue = DateTime.Now;
 
-                    if (entry.State is EntityState.Modified)
-                        entry.Property(RegistrationDateProperty).IsModified = false;
-                });
+                if (entry.State is EntityState.Modified)
+                    entry.Property(RegistrationDateProperty).IsModified = false;
+            });
 
         return await base.SaveChangesAsync() > 0;
     }
@@ -40,8 +38,8 @@ public class CatalogContext : DbContext, IUnitOfWork
             .SelectMany(entityType => entityType
                 .GetProperties()
                 .Where(p => p.ClrType == typeof(string)))
-                .ToList()
-                .ForEach(property => property.SetColumnType("varchar(100)"));
+            .ToList()
+            .ForEach(property => property.SetColumnType("varchar(100)"));
 
         modelBuilder.Ignore<Event>();
 

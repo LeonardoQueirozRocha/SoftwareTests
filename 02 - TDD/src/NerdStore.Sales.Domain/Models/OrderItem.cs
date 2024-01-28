@@ -2,12 +2,16 @@ using NerdStore.Core.DomainObjects;
 
 namespace NerdStore.Sales.Domain.Models;
 
-public class OrderItem
+public class OrderItem : Entity
 {
     public Guid ProductId { get; }
+    public Guid OrderId { get; set; }
     public string ProductName { get; }
     public int Quantity { get; private set; }
     public decimal UnitValue { get; }
+    
+    // EF Rel.
+    public Order Order { get; set; }
 
     public OrderItem(
         Guid productId,
@@ -24,7 +28,13 @@ public class OrderItem
         UnitValue = unitValue;
     }
 
+    protected OrderItem() { }
+
+    internal void AssociateOrder(Guid orderId) => OrderId = orderId;
+
     internal void AddUnits(int units) => Quantity += units;
 
     internal decimal CalculateValue() => Quantity * UnitValue;
+
+    internal void UpdateUnits(int units) => Quantity = units;
 }

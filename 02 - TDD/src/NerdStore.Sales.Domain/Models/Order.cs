@@ -10,7 +10,9 @@ public class Order : Entity, IAggregateRoot
     public static int MIN_UNITS_ITEM => 1;
     private readonly List<OrderItem> _orderItems;
 
+    public int Code { get; private set; }
     public Guid CustomerId { get; private set; }
+    public Guid? VoucherId { get; private set; }
     public decimal TotalValue { get; private set; }
     public decimal Discount { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
