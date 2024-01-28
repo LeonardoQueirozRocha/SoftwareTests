@@ -10,6 +10,8 @@ using NerdStore.Catalog.Domain.Interfaces.Repositories;
 using NerdStore.Catalog.Domain.Interfaces.Services;
 using NerdStore.Catalog.Domain.Services;
 using NerdStore.Core.Messages.CommandMessages.Notifications;
+using NerdStore.Sales.Application.Interfaces;
+using NerdStore.Sales.Application.Queries;
 using NerdStore.Sales.Data;
 using NerdStore.Sales.Data.Repositories;
 using NerdStore.Sales.Domain.Interfaces.Repositories;
@@ -42,6 +44,7 @@ builder.Services.AddScoped<CatalogContext>();
 
 // Sales
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderQueries, OrderQueries>();
 builder.Services.AddScoped<SalesContext>();
 
 builder.Services.AddControllersWithViews();

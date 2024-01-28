@@ -36,6 +36,7 @@ CREATE TABLE [Orders] (
     [TotalValue] decimal(18,2) NOT NULL,
     [Discount] decimal(18,2) NOT NULL,
     [OrderStatus] int NOT NULL,
+    [RegistrationDate] datetime2 NOT NULL,
     [IsVoucherUsed] bit NOT NULL,
     CONSTRAINT [PK_Orders] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Orders_Vouchers_VoucherId] FOREIGN KEY ([VoucherId]) REFERENCES [Vouchers] ([Id])
@@ -45,8 +46,10 @@ GO
 CREATE TABLE [OrderItems] (
     [Id] uniqueidentifier NOT NULL,
     [OrderId] uniqueidentifier NOT NULL,
+    [ProductId] uniqueidentifier NOT NULL,
     [ProductName] varchar(250) NOT NULL,
     [Quantity] int NOT NULL,
+    [UnitValue] decimal(18,2) NOT NULL,
     CONSTRAINT [PK_OrderItems] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_OrderItems_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [Orders] ([Id])
 );
@@ -59,7 +62,7 @@ CREATE INDEX [IX_Orders_VoucherId] ON [Orders] ([VoucherId]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20240128002607_Final', N'7.0.15');
+VALUES (N'20240128152641_Final', N'7.0.15');
 GO
 
 COMMIT;

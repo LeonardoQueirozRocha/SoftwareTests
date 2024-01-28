@@ -16,6 +16,7 @@ public class Order : Entity, IAggregateRoot
     public decimal TotalValue { get; private set; }
     public decimal Discount { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
+    public DateTime RegistrationDate { get; private set; }
     public bool IsVoucherUsed { get; private set; }
     public Voucher Voucher { get; private set; }
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
@@ -60,6 +61,12 @@ public class Order : Entity, IAggregateRoot
         _orderItems.Add(orderItem);
 
         CalculateOrderValue();
+    }
+
+    public void UpdateUnits(OrderItem item, int units)
+    {
+        item.UpdateUnits(units);
+        UpdateItem(item);
     }
 
     public void RemoveItem(OrderItem orderItem)

@@ -48,6 +48,9 @@ namespace NerdStore.Sales.Data.Migrations
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("TotalValue")
                         .HasColumnType("decimal(18,2)");
 

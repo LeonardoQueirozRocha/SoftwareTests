@@ -12,7 +12,7 @@ using NerdStore.Sales.Data;
 namespace NerdStore.Sales.Data.Migrations
 {
     [DbContext(typeof(SalesContext))]
-    [Migration("20240128002607_Final")]
+    [Migration("20240128152641_Final")]
     partial class Final
     {
         /// <inheritdoc />
@@ -50,6 +50,9 @@ namespace NerdStore.Sales.Data.Migrations
 
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("TotalValue")
                         .HasColumnType("decimal(18,2)");
