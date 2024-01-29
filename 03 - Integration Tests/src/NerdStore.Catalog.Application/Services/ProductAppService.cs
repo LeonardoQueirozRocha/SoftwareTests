@@ -26,22 +26,26 @@ public class ProductAppService : IProductAppService
 
     public async Task<IEnumerable<ProductViewModel>> GetByCategoryAsync(int code)
     {
-        return _mapper.Map<IEnumerable<ProductViewModel>>(await _productRepository.GetByCategoryAsync(code));
+        var products = await _productRepository.GetByCategoryAsync(code);
+        return _mapper.Map<IEnumerable<ProductViewModel>>(products);
     }
 
     public async Task<ProductViewModel> GetByIdAsync(Guid id)
     {
-        return _mapper.Map<ProductViewModel>(await _productRepository.GetByIdAsync(id));
+        var product = await _productRepository.GetByIdAsync(id);
+        return _mapper.Map<ProductViewModel>(product);
     }
 
     public async Task<IEnumerable<ProductViewModel>> GetAllAsync()
     {
-        return _mapper.Map<IEnumerable<ProductViewModel>>(await _productRepository.GetAllAsync());
+        var products = await _productRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<ProductViewModel>>(products);
     }
 
     public async Task<IEnumerable<CategoryViewModel>> GetCategoriesAsync()
     {
-        return _mapper.Map<IEnumerable<CategoryViewModel>>(await _productRepository.GetCategoriesAsync());
+        var categories = await _productRepository.GetCategoriesAsync();
+        return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
     }
 
     public async Task AddProductAsync(ProductViewModel productViewModel)
