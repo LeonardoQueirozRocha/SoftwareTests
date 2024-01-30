@@ -17,8 +17,7 @@ public static class DbContextConfiguration
         services.AddDbContext<CatalogContext>(options => options.UseSqlServer(connectionString));
         services.AddDbContext<SalesContext>(options => options.UseSqlServer(connectionString));
         services.AddDatabaseDeveloperPageExceptionFilter();
-        services
-            .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+        services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
     }
 }
