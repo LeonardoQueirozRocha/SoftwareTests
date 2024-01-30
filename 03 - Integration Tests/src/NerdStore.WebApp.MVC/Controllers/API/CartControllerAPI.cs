@@ -38,6 +38,7 @@ public class CartControllerAPI : MainController
         UserManager<IdentityUser> userManager,
         IOptions<AppSettings> appSettings) : base(notifications, mediator, accessor)
     {
+        _mediator = mediator;
         _productAppService = productAppService;
         _orderQueries = orderQueries;
         _signInManager = signInManager;
