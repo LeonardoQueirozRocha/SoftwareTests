@@ -1,16 +1,24 @@
 using NerdStore.WebApp.MVC.Configurations;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace NerdStore.WebApp.MVC;
 
-builder.AddAppSettingsConfiguration();
-builder.Services.AddDbContextConfiguration(builder.Configuration);
-builder.Services.AddWebAppConfiguration();
-builder.Services.AddServicesDependencies();
-builder.Services.AddSwaggerConfiguration();
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+        builder.AddAppSettingsConfiguration();
+        builder.Services.AddDbContextConfiguration(builder.Configuration);
+        builder.Services.AddWebAppConfiguration();
+        builder.Services.AddServicesDependencies();
+        builder.Services.AddSwaggerConfiguration();
 
-app.UseWebAppConfiguration(app.Environment);
-app.UseSwaggerConfiguration();
+        var app = builder.Build();
 
-app.Run();
+        app.UseWebAppConfiguration(app.Environment);
+        app.UseSwaggerConfiguration();
+
+        app.Run();
+    }
+}
