@@ -2,6 +2,7 @@ using MediatR;
 using Moq;
 using Moq.AutoMock;
 using NerdStore.Sales.Application.Commands;
+using NerdStore.Sales.Application.Handlers;
 using NerdStore.Sales.Domain.Interfaces.Repositories;
 using NerdStore.Sales.Domain.Models;
 

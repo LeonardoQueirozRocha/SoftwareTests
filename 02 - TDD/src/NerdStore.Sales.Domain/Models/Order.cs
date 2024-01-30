@@ -10,10 +10,13 @@ public class Order : Entity, IAggregateRoot
     public static int MIN_UNITS_ITEM => 1;
     private readonly List<OrderItem> _orderItems;
 
+    public int Code { get; private set; }
     public Guid CustomerId { get; private set; }
+    public Guid? VoucherId { get; private set; }
     public decimal TotalValue { get; private set; }
     public decimal Discount { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
+    public DateTime RegistrationDate { get; private set; }
     public bool IsVoucherUsed { get; private set; }
     public Voucher Voucher { get; private set; }
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
@@ -58,6 +61,12 @@ public class Order : Entity, IAggregateRoot
         _orderItems.Add(orderItem);
 
         CalculateOrderValue();
+    }
+
+    public void UpdateUnits(OrderItem item, int units)
+    {
+        item.UpdateUnits(units);
+        UpdateItem(item);
     }
 
     public void RemoveItem(OrderItem orderItem)
