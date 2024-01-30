@@ -4,12 +4,12 @@ namespace NerdStore.Sales.Domain.Models;
 
 public class OrderItem : Entity
 {
-    public Guid ProductId { get; }
-    public Guid OrderId { get; set; }
-    public string ProductName { get; }
+    public Guid ProductId { get; private set; }
+    public Guid OrderId { get; private set; }
+    public string ProductName { get; private set; }
     public int Quantity { get; private set; }
-    public decimal UnitValue { get; }
-    
+    public decimal UnitValue { get; private set; }
+
     // EF Rel.
     public Order Order { get; set; }
 
