@@ -15,7 +15,13 @@ public class IntegrationTestsFixture<TProgram> : IDisposable where TProgram : cl
 
     public IntegrationTestsFixture()
     {
-        var clientOptions = new WebApplicationFactoryClientOptions { };
+        var clientOptions = new WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = true,
+            BaseAddress = new Uri("http://localhost"),
+            HandleCookies = true,
+            MaxAutomaticRedirections = 7
+        };
 
         Factory = new StoreAppFactory<TProgram>();
         Client = Factory.CreateClient(clientOptions);
@@ -29,6 +35,29 @@ public class IntegrationTestsFixture<TProgram> : IDisposable where TProgram : cl
 
         UserEmail = faker.Internet.Email().ToLower();
         UserPassword = faker.Internet.Password(8, false, string.Empty, passwordPrefix);
+    }
+
+    public async Task LoginWebAsync()
+    {
+        var initialResponse = await Client.GetAsync(WebApplicationUrls.LoginUrl);
+        initialResponse.EnsureSuccessStatusCode();
+
+        var htmlBody = await initialResponse.Content.ReadAsStringAsync();
+        var antiForgeryToken = GetAntiForgeryToken(htmlBody);
+
+        var formData = new Dictionary<string, string>
+        {
+            {AntiForgeryFieldName, antiForgeryToken},
+            {"Input.Email", "teste@teste.com"},
+            {"Input.Password", "Teste@123"}
+        };
+
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, WebApplicationUrls.LoginUrl)
+        {
+            Content = new FormUrlEncodedContent(formData)
+        };
+
+        await Client.SendAsync(postRequest);
     }
 
     public string GetAntiForgeryToken(string htmlBody)

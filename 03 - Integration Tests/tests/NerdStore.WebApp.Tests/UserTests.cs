@@ -21,9 +21,7 @@ public class UserTests
     public async Task User_AccomplishRegister_ShouldExecuteSuccessfully()
     {
         // Arrange
-        var requestUri = "/Identity/Account/Register";
-
-        var initialResponse = await _testsFixture.Client.GetAsync(requestUri);
+        var initialResponse = await _testsFixture.Client.GetAsync(WebApplicationUrls.RegisterUrl);
 
         initialResponse.EnsureSuccessStatusCode();
 
@@ -40,7 +38,7 @@ public class UserTests
             { "Input.ConfirmPassword", _testsFixture.UserPassword }
         };
 
-        var postRequest = new HttpRequestMessage(HttpMethod.Post, requestUri)
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, WebApplicationUrls.RegisterUrl)
         {
             Content = new FormUrlEncodedContent(formData)
         };
@@ -63,8 +61,7 @@ public class UserTests
     public async Task User_AccomplishLogin_ShouldExecuteSuccessfully()
     {
         // Arrange
-        var requestUri = "/Identity/Account/Login";
-        var initialResponse = await _testsFixture.Client.GetAsync(requestUri);
+        var initialResponse = await _testsFixture.Client.GetAsync(WebApplicationUrls.LoginUrl);
 
         var initialResponseString = await initialResponse.Content.ReadAsStringAsync();
         var antiForgeryToken = _testsFixture.GetAntiForgeryToken(initialResponseString);
@@ -76,7 +73,7 @@ public class UserTests
             { "Input.Password", _testsFixture.UserPassword }
         };
 
-        var postRequest = new HttpRequestMessage(HttpMethod.Post, requestUri)
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, WebApplicationUrls.LoginUrl)
         {
             Content = new FormUrlEncodedContent(formData)
         };
@@ -99,9 +96,7 @@ public class UserTests
     public async Task User_AccomplishRegisterWithWeakPassword_ShouldReturnErrorMessage()
     {
         // Arrange
-        var requestUri = "/Identity/Account/Register";
-
-        var initialResponse = await _testsFixture.Client.GetAsync(requestUri);
+        var initialResponse = await _testsFixture.Client.GetAsync(WebApplicationUrls.RegisterUrl);
 
         initialResponse.EnsureSuccessStatusCode();
 
@@ -119,7 +114,7 @@ public class UserTests
             { "Input.ConfirmPassword", weakPassword }
         };
 
-        var postRequest = new HttpRequestMessage(HttpMethod.Post, requestUri)
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, WebApplicationUrls.RegisterUrl)
         {
             Content = new FormUrlEncodedContent(formData)
         };
