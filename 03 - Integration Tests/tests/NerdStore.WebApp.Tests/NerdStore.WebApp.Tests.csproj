@@ -19,8 +19,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="3.0.0-preview3-19153-02" />
+    <PackageReference Include="Bogus" Version="35.4.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\NerdStore.WebApp.MVC\NerdStore.WebApp.MVC.csproj" />
+    <ProjectReference Include="..\..\..\01 - Unit Tests\2.2 - Features\Features.Tests\Features.Tests.csproj" />
   </ItemGroup>
 </Project>
