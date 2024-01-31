@@ -20,17 +20,22 @@ public class UserTests
     {
         // Arrange
         var requestUri = "/Identity/Account/Register";
+
         var initialResponse = await _testsFixture.Client.GetAsync(requestUri);
 
         initialResponse.EnsureSuccessStatusCode();
 
-        var email = "teste@teste.com";
+        var initialResponseString = await initialResponse.Content.ReadAsStringAsync();
+        var antiForgeryToken = _testsFixture.GetAntiForgeryToken(initialResponseString);
+
+        _testsFixture.GenerateUserData();
 
         var formData = new Dictionary<string, string>
         {
-            { "Input.Email", email },
-            { "Input.Password", "Teste@123" },
-            { "Input.ConfirmPassword", "Teste@123" }
+            { _testsFixture.AntiForgeryFieldName, antiForgeryToken },
+            { "Input.Email", _testsFixture.UserEmail },
+            { "Input.Password", _testsFixture.UserPassword },
+            { "Input.ConfirmPassword", _testsFixture.UserPassword }
         };
 
         var postRequest = new HttpRequestMessage(HttpMethod.Post, requestUri)
@@ -45,6 +50,9 @@ public class UserTests
         var responseString = await postResponse.Content.ReadAsStringAsync();
 
         postResponse.EnsureSuccessStatusCode();
-        Assert.Contains($"Hello {email}!", responseString);
+
+        var expectedResult = $"Hello {_testsFixture.UserEmail}!";
+        
+        Assert.Contains(expectedResult, responseString);
     }
 }

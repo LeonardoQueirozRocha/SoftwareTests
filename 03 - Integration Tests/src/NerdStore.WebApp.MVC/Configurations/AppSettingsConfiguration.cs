@@ -10,6 +10,6 @@ public static class AppSettingsConfiguration
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
             .AddEnvironmentVariables();
 
-        builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+        builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
     }
 }
