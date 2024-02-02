@@ -38,4 +38,21 @@ public class OrderApiTests
         // Assert
         postResponse.EnsureSuccessStatusCode();
     }
+
+    [Fact(DisplayName = "Remove item from a existing order"), TestPriority(2)]
+    [Trait("Category", "API Integration - Order")]
+    public async Task RemoveItem_ExistingItem_ShouldReturnSuccessfully()
+    {
+        // Arrange
+        var productId = new Guid("78162be3-61c4-4959-89d7-5ebfb476427e");
+
+        await _testsFixture.LoginApiAsync();
+        _testsFixture.Client.AssignToken(_testsFixture.UserToken);
+
+        // Act
+        var deleteResponse = await _testsFixture.Client.DeleteAsync(ApiApplicationEndpoints.DeleteEndpoint(productId));
+
+        // Assert
+        deleteResponse.EnsureSuccessStatusCode();
+    }
 }
