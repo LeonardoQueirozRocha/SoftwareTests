@@ -1,6 +1,8 @@
+using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using Bogus;
 using Microsoft.AspNetCore.Mvc.Testing;
+using NerdStore.WebApp.MVC.Models;
 
 namespace NerdStore.WebApp.Tests.Configurations;
 
@@ -9,6 +11,7 @@ public class IntegrationTestsFixture<TProgram> : IDisposable where TProgram : cl
     public string AntiForgeryFieldName = "__RequestVerificationToken";
     public string UserEmail;
     public string UserPassword;
+    public string UserToken;
 
     public readonly StoreAppFactory<TProgram> Factory;
     public HttpClient Client;
@@ -35,6 +38,21 @@ public class IntegrationTestsFixture<TProgram> : IDisposable where TProgram : cl
 
         UserEmail = faker.Internet.Email().ToLower();
         UserPassword = faker.Internet.Password(8, false, string.Empty, passwordPrefix);
+    }
+
+    public async Task LoginApiAsync()
+    {
+        var userData = new LoginViewModel
+        {
+            Email = "teste@teste.com",
+            Password = "Teste@123"
+        };
+
+        Client = Factory.CreateClient();
+
+        var response = await Client.PostAsJsonAsync(ApiApplicationEndpoints.LoginEndpoint, userData);
+        response.EnsureSuccessStatusCode();
+        UserToken = await response.Content.ReadAsStringAsync();
     }
 
     public async Task LoginWebAsync()
