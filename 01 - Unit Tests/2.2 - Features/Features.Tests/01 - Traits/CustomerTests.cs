@@ -1,4 +1,4 @@
-using Features.Costumers.Models;
+using Features.Custumers.Models;
 
 namespace Features.Tests.Traits;
 

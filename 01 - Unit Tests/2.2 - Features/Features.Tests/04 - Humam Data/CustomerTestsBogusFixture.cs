@@ -1,6 +1,6 @@
 ﻿using Bogus;
 using Bogus.DataSets;
-using Features.Costumers.Models;
+using Features.Custumers.Models;
 
 namespace Features.Tests.HumamData;
 

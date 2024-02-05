@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Features.Costumers.Notifications;
+namespace Features.Custumers.Notifications;
 
 public class CustomerEmailNotification : INotification
 {
@@ -10,9 +10,9 @@ public class CustomerEmailNotification : INotification
     public string Message { get; private set; }
 
     public CustomerEmailNotification(
-        string origin, 
-        string destiny, 
-        string subject, 
+        string origin,
+        string destiny,
+        string subject,
         string message)
     {
         Origin = origin;

@@ -1,7 +1,7 @@
-using Features.Costumers.Models;
+using Features.Custumers.Models;
 using FluentValidation;
 
-namespace Features.Costumers.Validators;
+namespace Features.Custumers.Validators;
 
 public class CustomerValidator : AbstractValidator<Customer>
 {
@@ -36,6 +36,6 @@ public class CustomerValidator : AbstractValidator<Customer>
             .NotEqual(Guid.Empty);
     }
 
-    private static bool HaveMinimumAge(DateTime birthDate) => 
+    private static bool HaveMinimumAge(DateTime birthDate) =>
         birthDate.Date.CompareTo(DateTime.Now.Date.AddYears(MinimumAge)) <= 0;
 }

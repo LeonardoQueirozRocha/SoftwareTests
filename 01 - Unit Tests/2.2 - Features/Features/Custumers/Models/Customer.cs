@@ -1,8 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using Features.Core;
-using Features.Costumers.Validators;
+using Features.Custumers.Validators;
+using System.ComponentModel.DataAnnotations;
 
-namespace Features.Costumers.Models;
+namespace Features.Custumers.Models;
 
 public class Customer : Entity
 {
