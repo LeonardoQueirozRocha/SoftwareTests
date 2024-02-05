@@ -1,8 +1,8 @@
 using Bogus;
 using Bogus.DataSets;
-using Features.Costumers.Interfaces;
-using Features.Costumers.Models;
-using Features.Costumers.Services;
+using Features.Custumers.Interfaces;
+using Features.Custumers.Models;
+using Features.Custumers.Services;
 using MediatR;
 using Moq;
 using Moq.AutoMock;

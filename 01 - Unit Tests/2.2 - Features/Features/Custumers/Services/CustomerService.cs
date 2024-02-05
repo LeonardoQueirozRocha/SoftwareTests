@@ -1,9 +1,9 @@
-using Features.Costumers.Interfaces;
-using Features.Costumers.Models;
-using Features.Costumers.Notifications;
+using Features.Custumers.Interfaces;
+using Features.Custumers.Models;
+using Features.Custumers.Notifications;
 using MediatR;
 
-namespace Features.Costumers.Services;
+namespace Features.Custumers.Services;
 
 public class CustomerService : ICustomerService
 {

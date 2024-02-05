@@ -1,6 +1,6 @@
-using Features.Costumers.Models;
+using Features.Custumers.Models;
 
-namespace Features.Costumers.Interfaces;
+namespace Features.Custumers.Interfaces;
 
 public interface ICustomerService : IDisposable
 {

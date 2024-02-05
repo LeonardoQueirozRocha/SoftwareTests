@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
-using Features.Costumers.Interfaces;
-using Features.Costumers.Models;
-using Features.Costumers.Services;
+using Features.Custumers.Interfaces;
+using Features.Custumers.Models;
+using Features.Custumers.Services;
 using Features.Tests.HumamData;
 using MediatR;
 using Moq;
