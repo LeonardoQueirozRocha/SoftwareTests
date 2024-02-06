@@ -1,38 +1,38 @@
-﻿Funcionalidade: Pedido - Adicionar Item ao Carrinho
-	Como um usuário
-	Eu desejo colocar um item no carrinho
-	Para que eu possa comprá-lo posteriormente
+﻿Feature: Order - Add Item to Cart
+	As a user
+	I want to add an item to the cart
+	So I can buy it later
 
-Cenário: Adicionar item com sucesso a um novo pedido
-Dado O usuario esteja logado
-E Que um produto esteja na vitrine
-E Esteja disponivel no estoque
-E Não tenha nenhum produto adicionado ao carrinho
-Quando O usuário adicionar uma unidade ao carrinho
-Então O usuário será redirecionado ao resumo da compra
-E O valor total do pedido será exatamente o valor do item adicionado
+Scenario: Successfully add item to a new order
+Given the user is logged in
+And that a product is in the window
+And be available in stock
+And do not have any products added to the cart
+When the user adds a unit to the cart
+Then the user will be redirected to the purchase summary
+And the total order value will be exactly the value of the added item
 
-Cenário: Adicionar items acima do limite
-Dado O usuario esteja logado
-E Que um produto esteja na vitrine
-E Esteja disponivel no estoque
-Quando O usuário adicionar um item acima da quantidade máxima permitida
-Então Receberá uma mensagem de erro mencionando que foi ultrapassada a quantidade limite
+Scenario: Add items above the limit
+Given the user is logged in
+And that a product is in the window
+And be available in stock
+When the user adds an item above the maximum quantity allowed
+Then receive an error message stating that the limit quantity has been exceeded
 
-Cenário: Adicionar item já existente no carrinho
-Dado O usuario esteja logado
-E Que um produto esteja na vitrine
-E Esteja disponivel no estoque
-E O mesmo produto já tenha sido adicionado ao carrinho anteriormente
-Quando O usuário adicionar uma unidade ao carrinho
-Então O usuário será redirecionado ao resumo da compra
-E A quantidade de itens daquele produto terá sido acrescida em uma unidade a mais
-E O valor total do pedido será a multiplicação da quantidade de itens pelo valor unitario
+Scenario: Add existing item to cart
+Given the user is logged in
+And that a product is in the window
+And be available in stock
+And the same product has already been added to the cart previously
+When the user adds a unit to the cart
+Then the user will be redirected to the purchase summary
+And the quantity of items for that product will have been increased by one more unit
+And the total order value will be the multiplication of the quantity of items by the unit value
 
-Cenário: Adicionar item já existente onde soma ultrapassa limite máximo
-Dado O usuario esteja logado
-E Que um produto esteja na vitrine
-E Esteja disponivel no estoque
-E O mesmo produto já tenha sido adicionado ao carrinho anteriormente
-Quando O usuário adicionar a quantidade máxima permitida ao carrinho
-Então Receberá uma mensagem de erro mencionando que foi ultrapassada a quantidade limite
+Scenario: Add existing item where sum exceeds maximum limit
+Given the user is logged in
+And that a product is in the window
+And be available in stock
+And the same product has already been added to the cart previously
+When the user adds the maximum quantity allowed to the cart
+Then receive an error message stating that the limit quantity has been exceeded
