@@ -1,4 +1,4 @@
-using OpenQA.Selenium.Chrome;
+using NerdStore.BDD.Tests.Configurations;
 using TechTalk.SpecFlow;
 
 namespace NerdStore.BDD.Tests.Order.Steps;
@@ -20,8 +20,10 @@ public class OrderAddItemToCartStepDefinitions
     public void GivenThatAProductIsInTheWindow()
     {
         // Arrange
-        var browser = new ChromeDriver("C:\\WebDriver\\");
-        browser.Navigate().GoToUrl("https://desenvolvedor.io/");
+        var browser = new SeleniumHelper(Browser.Chrome, new ConfigurationHelper(), false);
+        browser.GoToUrl("https://desenvolvedor.io/");
+        browser.ClickLinkByText("ENTRAR");
+        browser.FillTextBoxById("Email", "contato@teste.com");
 
         // Act
 
