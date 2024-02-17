@@ -4,8 +4,16 @@ using TechTalk.SpecFlow;
 namespace NerdStore.BDD.Tests.Order.Steps;
 
 [Binding]
+[CollectionDefinition(nameof(AutomationWebFixtureCollection))]
 public class OrderAddItemToCartStepDefinitions
 {
+    private readonly AutomationWebTestsFixture _testsFixture;
+
+    public OrderAddItemToCartStepDefinitions(AutomationWebTestsFixture testsFixture)
+    {
+        _testsFixture = testsFixture;
+    }
+
     [Given(@"the user is logged in")]
     public void GivenTheUserIsLoggedIn()
     {
@@ -20,7 +28,7 @@ public class OrderAddItemToCartStepDefinitions
     public void GivenThatAProductIsInTheWindow()
     {
         // Arrange
-        var browser = new SeleniumHelper(Browser.Chrome, new ConfigurationHelper(), false);
+        var browser = _testsFixture.BrowserHelper;
         browser.GoToUrl("https://desenvolvedor.io/");
         browser.ClickLinkByText("ENTRAR");
         browser.FillTextBoxById("Email", "contato@teste.com");
