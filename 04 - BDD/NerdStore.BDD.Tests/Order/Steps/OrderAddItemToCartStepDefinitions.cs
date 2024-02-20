@@ -8,10 +8,13 @@ namespace NerdStore.BDD.Tests.Order.Steps;
 public class OrderAddItemToCartStepDefinitions
 {
     private readonly AutomationWebTestsFixture _testsFixture;
+    private readonly OrderScreen _orderScreen;
+    private string _productUrl;
 
     public OrderAddItemToCartStepDefinitions(AutomationWebTestsFixture testsFixture)
     {
         _testsFixture = testsFixture;
+        _orderScreen = new OrderScreen(testsFixture.BrowserHelper);
     }
 
     [Given(@"the user is logged in")]
@@ -28,14 +31,14 @@ public class OrderAddItemToCartStepDefinitions
     public void GivenThatAProductIsInTheWindow()
     {
         // Arrange
-        var browser = _testsFixture.BrowserHelper;
-        browser.GoToUrl("https://desenvolvedor.io/");
-        browser.ClickLinkByText("ENTRAR");
-        browser.FillTextBoxById("Email", "contato@teste.com");
+        _orderScreen.AccessProductShowcase();
 
         // Act
+        _orderScreen.GetProductDetail();
+        _productUrl = _orderScreen.GetUrl();
 
         // Assert
+        Assert.True(_orderScreen.ValidateAvailableProduct());
     }
 
     [Given(@"be available in stock")]
