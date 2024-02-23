@@ -37,7 +37,7 @@ public class UserRegistrationStepDefinitions
         _userRegistrationScreen.FillRegisterForm(user);
 
         // Assert
-        Assert.True(_userRegistrationScreen.ValidateFillRegisterForm(user));
+        Assert.True(_userRegistrationScreen.ValidateFilledRegisterForm(user));
     }
 
     [When(@"click on the register button")]
@@ -49,24 +49,44 @@ public class UserRegistrationStepDefinitions
     [When(@"fill in the form data with a password without capital letters")]
     public void WhenFillInTheFormDataWithAPasswordWithoutCapitalLetters(Table table)
     {
-        throw new PendingStepException();
+        // Arrange
+        _testsFixture.GenerateUserData();
+        var user = _testsFixture.User;
+        user.Password = "test@123";
+
+        // Act
+        _userRegistrationScreen.FillRegisterForm(user);
+
+        // Assert
+        Assert.True(_userRegistrationScreen.ValidateFilledRegisterForm(user));
     }
 
     [Then(@"he will recieve an error message that the password must contain an uppercase letter")]
     public void ThenHeWillRecieveAnErrorMessageThatThePasswordMustContainAnUppercaseLetter()
     {
-        throw new PendingStepException();
+        var errorMessage = "Passwords must have at least one uppercase ('A'-'Z')";
+        Assert.True(_userRegistrationScreen.ValidateFormErrorMessage(errorMessage));
     }
 
     [When(@"fill in the form data with a password without special character")]
     public void WhenFillInTheFormDataWithAPasswordWithoutSpecialCharacter(Table table)
     {
-        throw new PendingStepException();
+        // Arrange
+        _testsFixture.GenerateUserData();
+        var user = _testsFixture.User;
+        user.Password = "test123";
+
+        // Act
+        _userRegistrationScreen.FillRegisterForm(user);
+
+        // Assert
+        Assert.True(_userRegistrationScreen.ValidateFilledRegisterForm(user));
     }
 
     [Then(@"he will recieve an error message that the password must contain a special caracter")]
     public void ThenHeWillRecieveAnErrorMessageThatThePasswordMustContainASpecialCaracter()
     {
-        throw new PendingStepException();
+        var errorMessage = "Passwords must have at least one non alphanumeric character";
+        Assert.True(_userRegistrationScreen.ValidateFormErrorMessage(errorMessage));
     }
 }

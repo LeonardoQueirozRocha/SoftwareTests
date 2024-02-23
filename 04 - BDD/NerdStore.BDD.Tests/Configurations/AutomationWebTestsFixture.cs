@@ -15,7 +15,7 @@ public class AutomationWebTestsFixture
     {
         User = new User.User();
         Configuration = new ConfigurationHelper();
-        BrowserHelper = new SeleniumHelper(Browser.Chrome, Configuration, false);
+        BrowserHelper = new SeleniumHelper(Browser.Chrome, Configuration);
     }
 
     public void GenerateUserData()

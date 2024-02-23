@@ -22,12 +22,14 @@ public class UserRegistrationScreen : UserBaseScreen
         Helper.FillTextBoxById(InputConfirmPasswordId, user.Password);
     }
 
-    public bool ValidateFillRegisterForm(User user)
+    public bool ValidateFilledRegisterForm(User user)
     {
         if (Helper.GetTextBoxValuebyId(InputEmailId) != user.Email || 
             Helper.GetTextBoxValuebyId(InputPasswordId) != user.Password || 
-            Helper.GetTextBoxValuebyId(InputConfirmPasswordId) != user.Password) 
+            Helper.GetTextBoxValuebyId(InputConfirmPasswordId) != user.Password)
+        {
             return false;
+        }
 
         return true;
     }

@@ -15,4 +15,9 @@ public abstract class UserBaseScreen : PageObjectModel
     {
         return Helper.GetTextElementById("user-greeting").Contains(user.Email);
     }
+
+    public bool ValidateFormErrorMessage(string message)
+    {
+        return Helper.GetTextElementByCssClass("text-danger").Contains(message);
+    }
 }
