@@ -29,7 +29,7 @@ public class AddOrderItemValidator : AbstractValidator<AddOrderItemCommand>
         RuleFor(c => c.Quantity)
             .GreaterThan(0)
             .WithMessage(MinimumQuantityErrorMessage)
-            .LessThanOrEqualTo(Order.MAX_UNITS_ITEM)
+            .LessThan(Order.MAX_UNITS_ITEM)
             .WithMessage(MaximumQuantityErrorMessage);
 
         RuleFor(c => c.UnitValue)
