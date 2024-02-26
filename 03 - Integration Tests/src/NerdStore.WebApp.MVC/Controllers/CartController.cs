@@ -59,7 +59,7 @@ public class CartController : MainController
 
         if (IsValid()) return RedirectToAction("Index");
 
-        TempData["Error"] = GetErrorMessages();
+        TempData["Errors"] = GetErrorMessages();
         return RedirectToAction("ProductDetail", "Showcase", new { id });
     }
 
